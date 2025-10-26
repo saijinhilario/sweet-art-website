@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Art</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f8e0e0;
+        }
+
+        /* HEADER */
+        .header {
+            width: 100%;
+            height: 80px;
+            background-color: #e8a5a5;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            z-index: 1000;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 8px;
+            border-radius: 20px;
+            width: 50%;
+        }
+
+        .search-container input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 16px;
+            padding: 5px;
+            background: none;
+        }
+
+        .search-container i {
+            color: gray;
+            margin-left: 8px;
+        }
+
+        .logo {
+            height: 140px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background-color: #e8a5a5;
+            height: 100vh;
+            padding-top: 100px;
+            position: fixed;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar a {
+            width: 80%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            color: black;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 20px;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar .active {
+            background: white;
+            font-weight: bold;
+        }
+
+        /* MAIN CONTENT */
+        .content-container {
+            margin-left: 270px;
+            margin-top: 100px;
+            padding: 20px;
+            width: calc(100% - 270px);
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-card h3 {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .product-card p {
+            font-weight: bold;
+        }
+
+        .product-card button {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8a5a5;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="search-container">
+            <i class="fas fa-user"></i>
+            <input type="text" id="searchBar" placeholder="Search">
+            <i class="fas fa-search"></i>
+        </div>
+        <img src="logo.png" alt="Sweet Art Logo" class="logo">
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+        <a href="acc.html"><i class="fas fa-user"></i> Account</a>
+         <a href="c2.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="set.html"><i class="fas fa-cog"></i> Settings</a>
+        <a href="about.html"><i class="fas fa-users"></i> About Us</a>
+        <a href="c3.html"><i class="fas fa-comments"></i> Contact</a>
+        <a href="log.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content-container">
+        <div class="product-grid" id="product-grid"></div>
+    </div>
+
+    <script>
+        const products = [
+            { name: "Strawberry Cake", price: 1150, img: "strawberry_cake.jpg" },
+            { name: "Choco Moist Cake", price: 200, img: "choco_moist.jpg" },
+            { name: "Crinkles", price: 15, img: "crinkles.jpg" },
+            { name: "Milk Bread", price: 200, img: "milk_bread.jpg" },
+            { name: "Choco Pianono", price: 350, img: "choco_pianono.jpg" },
+            { name: "Blueberry Cheesecake", price: 1750, img: "blueberry_cheesecake.jpg" },
+            { name: "Double Choco Cookies", price: 35, img: "double_choco_cookies.jpg" },
+            { name: "Chocolate Chip Cookies", price: 35, img: "chocolate_cookies.jpg" },
+            { name: "Banana Muffins", price: 50, img: "banana_muffins.jpg" },
+            { name: "Brownies", price: 60, img: "brownies.jpg" },
+            { name: "Brownies w/ Pistachios", price: 60, img: "Brownies_Pistachios.jpg" },
+            { name: "Revel Bar", price: 70, img: "revel_bar.jpg" }
+        ];
+
+        const grid = document.getElementById('product-grid');
+        const searchBar = document.getElementById('searchBar');
+
+        function displayProducts(filteredProducts) {
+            grid.innerHTML = "";
+            filteredProducts.forEach(p => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p>₱${p.price}</p>
+                    <button onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+         function addToCart(name, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let product = products.find(item => item.name === name);
+
+    if (!product) return; // Ensure the product exists
+
+    let existingProduct = cart.find(item => item.name === name);
+
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({ name, price, img: product.img, quantity: 1 }); // Ensure img is stored
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(name + " added to cart!");
+}
+
+        searchBar.addEventListener("input", function () {
+            const searchText = searchBar.value.toLowerCase();
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchText));
+            displayProducts(filteredProducts);
+        });
+
+        displayProducts(products);
+    </script>
+    
+</body>
+</html>
